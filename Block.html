@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>俄罗斯方块</title>
+    <style type="text/css">
+    * {
+        margin: 0;
+        padding: 0;
+    }
+    
+    #wrap {
+        position: relative;
+        width: 600px;
+        height: 600px;
+        margin: 0 auto;
+    }
+    
+    #canvas1 {
+        position: absolute;
+        top: 0;
+        left: 0;
+        border: 1px solid black;
+    }
+    #control-panel{
+    	position: absolute;
+    	top: 0;
+    	right: -200px;
+    }
+    #playBtn{
+    	position: absolute;
+    	bottom: 30px;
+    	left: 20px;
+    	width: 50px;
+    	height: 50px;
+    	background:url(img/pause.png);
+    	background-size: 50px 50px;
+    	transition: all 0.5s;
+    }
+    .pause{
+    	background:url(img/player.png) !important;
+    	background-size: 50px 50px !important;
+    }
+    </style>
+</head>
+
+<body>
+    <div id="wrap">
+        <canvas width="600" height="600" id="canvas1"></canvas>
+        <canvas width="600" height="600" id="canvas2"></canvas>
+        <div id="control-panel">
+        	<canvas width="200" height="600" id="canvas3"></canvas>
+        	<div title="暂停/运行" id="playBtn"></div>
+        </div>
+    </div>
+    <script src="js/common.js" type="text/javascript"></script>
+    <script src="js/block.js" type="text/javascript"></script>
+    <script src="js/game.js" type="text/javascript"></script>
+</body>
+
+</html>
