@@ -21,7 +21,6 @@ window.onload = function() {
         if (!isPlay) elem.className = "pause";
         else elem.className = "";
     };
-
     game();
 };
 
@@ -76,20 +75,31 @@ function gameInit() {
     //绑定键盘事件,left:左,right:右,up:改变状态,down:向下加速
     window.onkeydown = function(event) {
         var key = event.keyCode;
-        if (key === 37) {
+        //左,A
+        if (key === 37 || key === 65) {
             if (canMove(0)) {
                 block.x -= defaultSize;
                 block.calMatrix();
             }
-        } else if (key === 39) {
+            //右,D
+        } else if (key === 39 || key === 68) {
             if (canMove(1)) {
                 block.x += defaultSize;
                 block.calMatrix();
             }
-        } else if (key === 38) {
+            //上,W
+        } else if (key === 38 || key === 87) {
             blockChange();
-        } else if (key === 40) {
+            //下,S
+        } else if (key === 40 || key === 83) {
             accel = 5;
+            //空格，暂停或继续
+        } else if (key == 32) {
+            var elem = document.getElementById("playBtn");
+            console.log(elem);
+            isPlay = !isPlay;
+            if (!isPlay) elem.className = "pause";
+            else elem.className = "";
         }
         //放开加速键停止加速
         window.onkeyup = function(event) {
@@ -214,7 +224,7 @@ function blockChange() {
                 break;
             }
         }
-        if(flag)break;
+        if (flag) break;
     }
     //若果不能旋转还原状态
     if (!flag) {
