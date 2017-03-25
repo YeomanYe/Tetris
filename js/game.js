@@ -47,6 +47,8 @@ var initFallCount = 20,
 var isEnd = false;
 //用于判断游戏是否是运行
 var isPlay = true;
+//分数与数量间的比例
+var ratio = 100;
 
 function game() {
     gameInit();
@@ -74,6 +76,7 @@ function gameInit() {
     }
     //绑定键盘事件,left:左,right:右,up:改变状态,down:向下加速
     window.onkeydown = function(event) {
+        debugger;
         var key = event.keyCode;
         //左,A
         if (key === 37 || key === 65) {
@@ -104,7 +107,7 @@ function gameInit() {
         //放开加速键停止加速
         window.onkeyup = function(event) {
             var key = event.keyCode;
-            if (key === 40) {
+            if (key === 40 || key === 83) {
                 accel = 1;
             }
         };
@@ -311,6 +314,7 @@ var dataObj = {
 
 
 function showScore() {
+
     ctx3.clearRect(0, 0, 200, 600);
     ctx3.beginPath();
     ctx3.fillStyle = "rgb(13,30,64)";
@@ -322,14 +326,20 @@ function showScore() {
         cHeight = canvas3.offsetHeight;
     ctx3.fillStyle = "white";
     ctx3.font = "50px Arial";
-    ctx3.fillText("Score", cWidth / 2 - 3 * 20, 100);
-    //不显示得分0
-    if (dataObj.cont) ctx3.fillText(dataObj.cont * 100, cWidth / 2 - 2 * 20, 180);
-    ctx3.fillText("Next", cWidth / 2 - 2 * 20, 300);
+    //显示历史最高分，不显示无
+    ctx3.fillText("Top",cWidth / 2 - 2 * 20,100);
+    var maxCount = localStorage.getItem("maxCount");
+    if(maxCount){
+        ctx3.fillText(maxCount * ratio,cWidth / 2 - 2 * 20,180);
+    }
+    //显示得分，不显示得分0
+    ctx3.fillText("Score", cWidth / 2 - 3 * 20, 250);
+    if (dataObj.cont) ctx3.fillText(dataObj.cont * ratio, cWidth / 2 - 2 * 20, 330);
+    ctx3.fillText("Next", cWidth / 2 - 2 * 20, 400);
     var showBlock = BlockFactory.newInstance(next, 40);
     showBlock.x = cWidth / 2;
-    showBlock.y = cHeight / 2 + 2 * defaultSize;
-    showBlock.draw(ctx3, 40);
+    showBlock.y = cHeight / 1.5 + 2 * defaultSize;
+    showBlock.draw(ctx3,40);
 }
 //判断游戏是否结束
 function isOver() {
@@ -345,6 +355,12 @@ function isOver() {
 }
 //游戏结束后的一些处理
 function gameOver() {
+    //如果比最大的值高，则更新最大值
+    var count = localStorage.getItem("maxCount");
+    if(count < dataObj.cont){
+        localStorage.setItem("maxCount",dataObj.cont);
+    }
+    //显示结束的文字
     ctx1.font = "50px Arial";
     ctx1.fillStyle = "black";
     ctx1.fillText("Game Over", canWidth / 2 - 20 * 5, canHeight / 2 - 25);
