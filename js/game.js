@@ -6,6 +6,9 @@ window.onload = function() {
     ctx2 = canvas2.getContext("2d");
     ctx3 = canvas3.getContext("2d");
 
+    screenWidth = window.innerWidth;
+    screenHeight = window.innerHeight;
+
     canWidth = canvas2.offsetWidth;
     canHeight = canvas2.offsetHeight;
 
@@ -24,6 +27,7 @@ window.onload = function() {
     game();
 };
 
+var screenWidth,screenHeight;
 //ctx2是下面一层canvas绘画上下文,ctx3用于显示分数控件等
 var ctx1, ctx2, ctx3;
 //绘制环境的宽高
