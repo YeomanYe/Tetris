@@ -1,39 +1,13 @@
-window.onload = function() {
-    var canvas1 = document.getElementById("canvas1"),
-        canvas2 = document.getElementById("canvas2"),
-        canvas3 = document.getElementById("canvas3");
-    ctx1 = canvas1.getContext("2d");
-    ctx2 = canvas2.getContext("2d");
-    ctx3 = canvas3.getContext("2d");
-
-    screenWidth = window.innerWidth;
-    screenHeight = window.innerHeight;
-
-    canWidth = canvas2.offsetWidth;
-    canHeight = canvas2.offsetHeight;
-
-    rowNum = canHeight / defaultSize;
-    colNum = canWidth / defaultSize;
-
-    var playBtn = document.getElementById("playBtn");
-    playBtn.style.cursor = "pointer";
-    playBtn.onclick = function(event) {
-        var elem = event.currentTarget;
-        console.log(elem);
-        isPlay = !isPlay;
-        if (!isPlay) elem.className = "pause";
-        else elem.className = "";
-    };
-    game();
-};
-
+//是否为移动设备
+var isMobile = true;
+//屏幕宽高
 var screenWidth,screenHeight;
 //ctx2是下面一层canvas绘画上下文,ctx3用于显示分数控件等
 var ctx1, ctx2, ctx3;
 //绘制环境的宽高
 var canWidth, canHeight;
 //方块单元大小
-var defaultSize = 40;
+var defaultSize = 65;
 //行列数
 var rowNum, colNum;
 //绘制方块的样式
@@ -53,6 +27,59 @@ var isEnd = false;
 var isPlay = true;
 //分数与数量间的比例
 var ratio = 100;
+
+var ctx3Width,ctx3Height;
+
+window.onload = function() {
+    var canvas1 = document.getElementById("canvas1"),
+        canvas2 = document.getElementById("canvas2"),
+        canvas3 = document.getElementById("canvas3"),
+        ctrPanel = document.getElementById("control-panel"),
+        wrap = document.getElementById("wrap");
+    ctx1 = canvas1.getContext("2d");
+    ctx2 = canvas2.getContext("2d");
+    ctx3 = canvas3.getContext("2d");
+
+    screenWidth = window.innerWidth;
+    screenHeight = window.innerHeight;
+
+    //如果屏幕宽度最大分辨率小于1000判断为手机
+    if(isMobile){
+      isMobile = true;  
+      colNum = Number.parseInt(screenWidth * 0.8 / defaultSize);
+      rowNum = Number.parseInt(screenHeight * 0.6 / defaultSize);
+      colNum = rowNum = Math.min(colNum,rowNum);
+      wrap.addClass("mobile-wrap");
+    } else{
+        canvas1.width = screenWidth;
+    }
+
+    canvas1.width = canvas2.width = colNum * defaultSize;
+    
+    ctx3Height =  canvas3.height = canvas1.height = canvas2.height = rowNum * defaultSize;
+
+    ctx3Width = canvas3.width = screenWidth - canvas1.width;
+    ctrPanel.style.right = -canvas3.width; 
+    console.log(screenWidth,screenHeight);
+    canWidth = canvas2.offsetWidth;
+    canHeight = canvas2.offsetHeight;
+
+
+    if(rowNum>colNum) rowNum = colNum;
+    else colNum = rowNum;
+
+    var playBtn = document.getElementById("playBtn");
+    playBtn.style.cursor = "pointer";
+    playBtn.onclick = function(event) {
+        var elem = event.currentTarget;
+        console.log(elem);
+        isPlay = !isPlay;
+        if (!isPlay) elem.className = "pause";
+        else elem.className = "";
+    };
+    game();
+};
+
 
 function game() {
     gameInit();
@@ -80,7 +107,6 @@ function gameInit() {
     }
     //绑定键盘事件,left:左,right:右,up:改变状态,down:向下加速
     window.onkeydown = function(event) {
-        debugger;
         var key = event.keyCode;
         //左,A
         if (key === 37 || key === 65) {
@@ -319,10 +345,10 @@ var dataObj = {
 
 function showScore() {
 
-    ctx3.clearRect(0, 0, 200, 600);
+    ctx3.clearRect(0, 0, ctx3Width, ctx3Height);
     ctx3.beginPath();
     ctx3.fillStyle = "rgb(13,30,64)";
-    ctx3.fillRect(0, 0, 200, 600);
+    ctx3.fillRect(0, 0, ctx3Width, ctx3Height);
     ctx3.closePath();
 
     var canvas3 = document.getElementById("canvas3"),
