@@ -3,6 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
+    <!-- <meta name="viewport" content="width=device-width, initial-scale=1" /> -->
     <title>俄罗斯方块</title>
     <style type="text/css">
     * {
@@ -42,16 +43,42 @@
     	background:url(img/player.png) !important;
     	background-size: 50px 50px !important;
     }
+    #mobile-status,#mobile-control{
+        display: none;
+        background-color: #0D1E40;
+    }
+    #mobile-control{
+        height: 230px;
+    }
+    .ctrl-btn{
+        margin:28px;
+        height: 180px;
+    }
+    #down-btn{
+        transform: rotate(270deg);
+    }
+    #right-btn{
+        transform: rotate(180deg);
+    }
     </style>
 </head>
 
 <body>
     <div id="wrap">
+        <div id="mobile-status">
+            <canvas id="mobile-status-canvas"></canvas>
+        </div>
         <canvas id="canvas1"></canvas>
         <canvas id="canvas2"></canvas>
         <div id="control-panel">
         	<canvas width="200" id="canvas3"></canvas>
         	<div title="暂停/运行" id="playBtn"></div>
+        </div>
+        <div id="mobile-control">
+            <img title="左移" class="ctrl-btn" id="left-btn" src="img/箭头.png" alt="">
+            <img title="翻转" class="ctrl-btn" id="rotate-btn" src="img/翻转.png" alt="">
+            <img title="加速" class="ctrl-btn" id="down-btn" src="img/箭头.png" alt="">
+            <img title="右移" class="ctrl-btn" id="right-btn" src="img/箭头.png" alt="">
         </div>
     </div>
     

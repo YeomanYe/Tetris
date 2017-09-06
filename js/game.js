@@ -1,5 +1,7 @@
 // 屏幕宽高
-var screenWidth,screenHeight;
+var screenWidth, screenHeight;
+// 移动设备下，状态栏高度
+var mobileStatusCanvasHeight = 0;
 // 初始化函数
 window.onload = function() {
     var canvas1 = document.getElementById("canvas1"),
@@ -12,16 +14,39 @@ window.onload = function() {
     screenWidth = window.innerWidth;
     screenHeight = window.innerHeight;
 
-    if(screenWidth>screenHeight){
-        canWidth = Number.parseInt(screenHeight/defaultSize) * defaultSize;
-        canHeight = canWidth;
+    //根据尺寸响应式设计宽高
+    if (screenWidth > screenHeight) {
+        canHeight = Number.parseInt(screenHeight / defaultSize) * defaultSize;
+        canWidth = canHeight;
         var canWrap = document.getElementById("wrap");
         canWrap.style.marginLeft = (screenWidth - canWidth) / 2 + "px";
         var controlPanel = document.getElementById("control-panel");
         controlPanel.style.left = canWidth + "px";
         canvas3.height = canHeight;
-    }else{
+    } else {
+        /*var canWrap = document.getElementById("wrap");
+        canWrap.style.display = (screenWidth - canWidth) / 2 + "px";*/
+        var controlPanel = document.getElementById("control-panel");
+        controlPanel.style.display = "none"
+        var mobileContrl = document.getElementById("mobile-control");
+        mobileContrl.style.display = "block";
+        // console.log(mobileContrl.style.height);
+        var mobileContrlHeight = mobileContrl.offsetHeight;
+        // defaultSize = 80;
+        
 
+        var mobileStatusCanvas = document.getElementById("mobile-status-canvas"),
+            mobileStatus = document.getElementById("mobile-status");
+        mobileStatusCanvasHeight = 150;
+        mobileStatus.style.display = "block";
+        mobileStatusCanvas.height = mobileStatusCanvasHeight;
+        mobileStatusCanvas.width = screenWidth;
+        ctx3 = mobileStatusCanvas.getContext("2d");
+
+        canHeight = Number.parseInt((screenHeight - mobileContrlHeight - mobileStatusCanvasHeight) / defaultSize) * defaultSize;
+        canWidth = Number.parseInt(screenWidth / defaultSize) * defaultSize;
+
+        canvas1.style.top = mobileStatusCanvasHeight + "px";
     }
 
     canvas1.width = canWidth;
@@ -29,8 +54,8 @@ window.onload = function() {
     canvas2.width = canWidth;
     canvas2.height = canHeight;
 
-/*    canWidth = canvas2.offsetWidth;
-    canHeight = canvas2.offsetHeight;*/
+    /*    canWidth = canvas2.offsetWidth;
+        canHeight = canvas2.offsetHeight;*/
 
     rowNum = canHeight / defaultSize;
     colNum = canWidth / defaultSize;
@@ -96,19 +121,27 @@ function gameInit() {
             envirStatus[i][j] = 0;
         }
     }
+    //方块左移
+    var blockMoveLeft = function() {
+        if (canMove(0)) {
+            block.x -= defaultSize;
+            block.calMatrix();
+        }
+    };
+    //方块右移
+    var blockMoveRight = function() {
+        if (canMove(1)) {
+            block.x += defaultSize;
+            block.calMatrix();
+        }
+    };
     //绑定键盘事件,left:左,right:右,up:改变状态,down:向下加速
     window.onkeydown = function(event) {
         var key = event.keyCode;
         if (key === 37) {
-            if (canMove(0)) {
-                block.x -= defaultSize;
-                block.calMatrix();
-            }
+            blockMoveLeft();
         } else if (key === 39) {
-            if (canMove(1)) {
-                block.x += defaultSize;
-                block.calMatrix();
-            }
+            blockMoveRight();
         } else if (key === 38) {
             blockChange();
         } else if (key === 40) {
@@ -121,6 +154,31 @@ function gameInit() {
                 accel = 1;
             }
         };
+    };
+    //设置按钮点击事件
+    var downBtn = document.getElementById("down-btn"),
+        leftBtn = document.getElementById("left-btn"),
+        rightBtn = document.getElementById("right-btn"),
+        rotateBtn = document.getElementById("rotate-btn");
+    downBtn.ontouchstart = function(e){
+        e.preventDefault();
+        accel = 5;
+    };
+    leftBtn.ontouchstart = function(e){
+        e.preventDefault();
+        blockMoveLeft();
+    };
+    rightBtn.ontouchstart = function(e){
+        e.preventDefault();
+        blockMoveRight();
+    };
+    rotateBtn.ontouchstart = function(e){
+        e.preventDefault();
+        blockChange();
+    };
+    downBtn.ontouchend = function(e){
+        e.preventDefault();
+        accel = 1;
     };
 
     drawBlockEnvir(ctx2);
@@ -237,7 +295,7 @@ function blockChange() {
                 break;
             }
         }
-        if(flag)break;
+        if (flag) break;
     }
     //若果不能旋转还原状态
     if (!flag) {
@@ -324,6 +382,35 @@ var dataObj = {
 
 //显示分数
 function showScore() {
+    if(screenWidth > screenHeight){
+        pcShowScore();
+    }else{
+        mobileShowScore();
+    }
+}
+// 移动端显示分数
+function mobileShowScore(){
+    ctx3.clearRect(0, 0, canWidth, canHeight);
+    ctx3.beginPath();
+    ctx3.fillStyle = "rgb(13,30,64)";
+    ctx3.fillRect(0, 0, canWidth, canHeight);
+    ctx3.closePath();
+
+    var canvas3 = document.getElementById("canvas3"),
+        cWidth = canvas3.offsetWidth,
+        cHeight = canvas3.offsetHeight;
+    ctx3.fillStyle = "white";
+    ctx3.font = "50px Arial";
+    ctx3.fillText("Score: ", cWidth / 20, 100);
+    ctx3.fillText(dataObj.cont * 100, cWidth / 2 + 150, 100 );
+    ctx3.fillText("Next", cWidth / 2 + 500, 100);
+    var showBlock = BlockFactory.newInstance(next, 40);
+    showBlock.x = cWidth / 2 + 700;
+    showBlock.y = cHeight / 2 + 2 * defaultSize;
+    showBlock.draw(ctx3, 40);
+}
+//PC端显示分数
+function pcShowScore(){
     ctx3.clearRect(0, 0, 200, canHeight);
     ctx3.beginPath();
     ctx3.fillStyle = "rgb(13,30,64)";
@@ -337,10 +424,10 @@ function showScore() {
     ctx3.font = "50px Arial";
     ctx3.fillText("Score", cWidth / 2 - 3 * 20, 100);
     //显示得分
-    if (dataObj.cont) 
-        ctx3.fillText(dataObj.cont * 100, cWidth / 2 - 2 * 20,100 + cHeight/6 );
+    if (dataObj.cont)
+        ctx3.fillText(dataObj.cont * 100, cWidth / 2 - 2 * 20, 100 + cHeight / 6);
     else
-        ctx3.fillText(dataObj.cont * 100, cWidth / 2 ,100 + cHeight/6 );
+        ctx3.fillText(dataObj.cont * 100, cWidth / 2, 100 + cHeight / 6);
     ctx3.fillText("Next", cWidth / 2 - 2 * 20, 300);
     var showBlock = BlockFactory.newInstance(next, 40);
     showBlock.x = cWidth / 2;
