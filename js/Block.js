@@ -67,8 +67,8 @@ function Square(blockSize) {
         };
         Square.prototype.calMatrix = function() {
             //使用点阵系统便于计算
-            this.xIndex = Number.parseInt(this.x / blockSize);
-            this.yIndex = Number.parseInt(this.y / blockSize);
+            this.xIndex = this.x / blockSize;
+            this.yIndex = this.y / blockSize;
             this.matrix = [
                 { x: this.xIndex, y: this.yIndex },
                 { x: this.xIndex-1, y: this.yIndex  },
@@ -121,8 +121,8 @@ function Strip(blockSize) {
         };
         Strip.prototype.calMatrix = function() {
             //更新点阵位置
-            this.xIndex = Number.parseInt(this.x / blockSize);
-            this.yIndex = Number.parseInt(this.y / blockSize);
+            this.xIndex = this.x / blockSize;
+            this.yIndex = this.y / blockSize;
 
             this.status %=2;
             if (!this.status) {
@@ -196,8 +196,8 @@ function Triangle(blockSize) {
         };
         Triangle.prototype.calMatrix = function() {
             //更新点阵位置
-            this.xIndex = Number.parseInt(this.x / blockSize);
-            this.yIndex = Number.parseInt(this.y / blockSize);
+            this.xIndex = this.x / blockSize;
+            this.yIndex = this.y / blockSize;
 
             this.status %= 4;
             switch (this.status) {
@@ -291,8 +291,8 @@ function SideThree(typeInt,blockSize) {
 
         SideThree.prototype.calMatrix = function() {
             //更新点阵位置
-            this.xIndex = Number.parseInt(this.x / blockSize);
-            this.yIndex = Number.parseInt(this.y / blockSize);
+            this.xIndex = this.x / blockSize;
+            this.yIndex = this.y / blockSize;
 
             this.status %= 4;
             var typeArg = this.type - 4;
@@ -387,8 +387,8 @@ function SideTwo(typeInt,blockSize) {
         SideTwo.prototype.calMatrix = function() {
             var typeArg = this.type - 6;
             //更新点阵位置
-            this.xIndex = Number.parseInt(this.x / blockSize);
-            this.yIndex = Number.parseInt(this.y / blockSize);
+            this.xIndex = this.x / blockSize;
+            this.yIndex = this.y / blockSize;
             //格式化状态
             this.status %= 2;
             if (!this.status) {

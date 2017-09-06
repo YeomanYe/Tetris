@@ -1,13 +1,36 @@
-//是否为移动设备
-var isMobile = true;
-//屏幕宽高
-var screenWidth,screenHeight;
+window.onload = function() {
+    var canvas1 = document.getElementById("canvas1"),
+        canvas2 = document.getElementById("canvas2"),
+        canvas3 = document.getElementById("canvas3");
+    ctx1 = canvas1.getContext("2d");
+    ctx2 = canvas2.getContext("2d");
+    ctx3 = canvas3.getContext("2d");
+
+    canWidth = canvas2.offsetWidth;
+    canHeight = canvas2.offsetHeight;
+
+    rowNum = canHeight / defaultSize;
+    colNum = canWidth / defaultSize;
+
+    var playBtn = document.getElementById("playBtn");
+    playBtn.style.cursor = "pointer";
+    playBtn.onclick = function(event) {
+        var elem = event.currentTarget;
+        console.log(elem);
+        isPlay = !isPlay;
+        if (!isPlay) elem.className = "pause";
+        else elem.className = "";
+    };
+
+    game();
+};
+
 //ctx2是下面一层canvas绘画上下文,ctx3用于显示分数控件等
 var ctx1, ctx2, ctx3;
 //绘制环境的宽高
 var canWidth, canHeight;
 //方块单元大小
-var defaultSize = 65;
+var defaultSize = 40;
 //行列数
 var rowNum, colNum;
 //绘制方块的样式
@@ -25,61 +48,6 @@ var initFallCount = 20,
 var isEnd = false;
 //用于判断游戏是否是运行
 var isPlay = true;
-//分数与数量间的比例
-var ratio = 100;
-
-var ctx3Width,ctx3Height;
-
-window.onload = function() {
-    var canvas1 = document.getElementById("canvas1"),
-        canvas2 = document.getElementById("canvas2"),
-        canvas3 = document.getElementById("canvas3"),
-        ctrPanel = document.getElementById("control-panel"),
-        wrap = document.getElementById("wrap");
-    ctx1 = canvas1.getContext("2d");
-    ctx2 = canvas2.getContext("2d");
-    ctx3 = canvas3.getContext("2d");
-
-    screenWidth = window.innerWidth;
-    screenHeight = window.innerHeight;
-
-    //如果屏幕宽度最大分辨率小于1000判断为手机
-    if(isMobile){
-      isMobile = true;  
-      colNum = Number.parseInt(screenWidth * 0.8 / defaultSize);
-      rowNum = Number.parseInt(screenHeight * 0.6 / defaultSize);
-      colNum = rowNum = Math.min(colNum,rowNum);
-      wrap.addClass("mobile-wrap");
-    } else{
-        canvas1.width = screenWidth;
-    }
-
-    canvas1.width = canvas2.width = colNum * defaultSize;
-    
-    ctx3Height =  canvas3.height = canvas1.height = canvas2.height = rowNum * defaultSize;
-
-    ctx3Width = canvas3.width = screenWidth - canvas1.width;
-    ctrPanel.style.right = -canvas3.width; 
-    console.log(screenWidth,screenHeight);
-    canWidth = canvas2.offsetWidth;
-    canHeight = canvas2.offsetHeight;
-
-
-    if(rowNum>colNum) rowNum = colNum;
-    else colNum = rowNum;
-
-    var playBtn = document.getElementById("playBtn");
-    playBtn.style.cursor = "pointer";
-    playBtn.onclick = function(event) {
-        var elem = event.currentTarget;
-        console.log(elem);
-        isPlay = !isPlay;
-        if (!isPlay) elem.className = "pause";
-        else elem.className = "";
-    };
-    game();
-};
-
 
 function game() {
     gameInit();
@@ -108,36 +76,25 @@ function gameInit() {
     //绑定键盘事件,left:左,right:右,up:改变状态,down:向下加速
     window.onkeydown = function(event) {
         var key = event.keyCode;
-        //左,A
-        if (key === 37 || key === 65) {
+        if (key === 37) {
             if (canMove(0)) {
                 block.x -= defaultSize;
                 block.calMatrix();
             }
-            //右,D
-        } else if (key === 39 || key === 68) {
+        } else if (key === 39) {
             if (canMove(1)) {
                 block.x += defaultSize;
                 block.calMatrix();
             }
-            //上,W
-        } else if (key === 38 || key === 87) {
+        } else if (key === 38) {
             blockChange();
-            //下,S
-        } else if (key === 40 || key === 83) {
+        } else if (key === 40) {
             accel = 5;
-            //空格，暂停或继续
-        } else if (key == 32) {
-            var elem = document.getElementById("playBtn");
-            console.log(elem);
-            isPlay = !isPlay;
-            if (!isPlay) elem.className = "pause";
-            else elem.className = "";
         }
         //放开加速键停止加速
         window.onkeyup = function(event) {
             var key = event.keyCode;
-            if (key === 40 || key === 83) {
+            if (key === 40) {
                 accel = 1;
             }
         };
@@ -257,7 +214,7 @@ function blockChange() {
                 break;
             }
         }
-        if (flag) break;
+        if(flag)break;
     }
     //若果不能旋转还原状态
     if (!flag) {
@@ -344,11 +301,10 @@ var dataObj = {
 
 
 function showScore() {
-
-    ctx3.clearRect(0, 0, ctx3Width, ctx3Height);
+    ctx3.clearRect(0, 0, 200, 600);
     ctx3.beginPath();
     ctx3.fillStyle = "rgb(13,30,64)";
-    ctx3.fillRect(0, 0, ctx3Width, ctx3Height);
+    ctx3.fillRect(0, 0, 200, 600);
     ctx3.closePath();
 
     var canvas3 = document.getElementById("canvas3"),
@@ -356,20 +312,14 @@ function showScore() {
         cHeight = canvas3.offsetHeight;
     ctx3.fillStyle = "white";
     ctx3.font = "50px Arial";
-    //显示历史最高分，不显示无
-    ctx3.fillText("Top",cWidth / 2 - 2 * 20,100);
-    var maxCount = localStorage.getItem("maxCount");
-    if(maxCount){
-        ctx3.fillText(maxCount * ratio,cWidth / 2 - 2 * 20,180);
-    }
-    //显示得分，不显示得分0
-    ctx3.fillText("Score", cWidth / 2 - 3 * 20, 250);
-    if (dataObj.cont) ctx3.fillText(dataObj.cont * ratio, cWidth / 2 - 2 * 20, 330);
-    ctx3.fillText("Next", cWidth / 2 - 2 * 20, 400);
+    ctx3.fillText("Score", cWidth / 2 - 3 * 20, 100);
+    //不显示得分0
+    if (dataObj.cont) ctx3.fillText(dataObj.cont * 100, cWidth / 2 - 2 * 20, 180);
+    ctx3.fillText("Next", cWidth / 2 - 2 * 20, 300);
     var showBlock = BlockFactory.newInstance(next, 40);
     showBlock.x = cWidth / 2;
-    showBlock.y = cHeight / 1.5 + 2 * defaultSize;
-    showBlock.draw(ctx3,40);
+    showBlock.y = cHeight / 2 + 2 * defaultSize;
+    showBlock.draw(ctx3, 40);
 }
 //判断游戏是否结束
 function isOver() {
@@ -385,12 +335,6 @@ function isOver() {
 }
 //游戏结束后的一些处理
 function gameOver() {
-    //如果比最大的值高，则更新最大值
-    var count = localStorage.getItem("maxCount");
-    if(count < dataObj.cont){
-        localStorage.setItem("maxCount",dataObj.cont);
-    }
-    //显示结束的文字
     ctx1.font = "50px Arial";
     ctx1.fillStyle = "black";
     ctx1.fillText("Game Over", canWidth / 2 - 20 * 5, canHeight / 2 - 25);
