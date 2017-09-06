@@ -1,3 +1,6 @@
+// 屏幕宽高
+var screenWidth,screenHeight;
+// 初始化函数
 window.onload = function() {
     var canvas1 = document.getElementById("canvas1"),
         canvas2 = document.getElementById("canvas2"),
@@ -6,8 +9,28 @@ window.onload = function() {
     ctx2 = canvas2.getContext("2d");
     ctx3 = canvas3.getContext("2d");
 
-    canWidth = canvas2.offsetWidth;
-    canHeight = canvas2.offsetHeight;
+    screenWidth = window.innerWidth;
+    screenHeight = window.innerHeight;
+
+    if(screenWidth>screenHeight){
+        canWidth = Number.parseInt(screenHeight/defaultSize) * defaultSize;
+        canHeight = canWidth;
+        var canWrap = document.getElementById("wrap");
+        canWrap.style.marginLeft = (screenWidth - canWidth) / 2 + "px";
+        var controlPanel = document.getElementById("control-panel");
+        controlPanel.style.left = canWidth + "px";
+        canvas3.height = canHeight;
+    }else{
+
+    }
+
+    canvas1.width = canWidth;
+    canvas1.height = canHeight;
+    canvas2.width = canWidth;
+    canvas2.height = canHeight;
+
+/*    canWidth = canvas2.offsetWidth;
+    canHeight = canvas2.offsetHeight;*/
 
     rowNum = canHeight / defaultSize;
     colNum = canWidth / defaultSize;
@@ -299,12 +322,12 @@ var dataObj = {
     }
 };
 
-
+//显示分数
 function showScore() {
-    ctx3.clearRect(0, 0, 200, 600);
+    ctx3.clearRect(0, 0, 200, canHeight);
     ctx3.beginPath();
     ctx3.fillStyle = "rgb(13,30,64)";
-    ctx3.fillRect(0, 0, 200, 600);
+    ctx3.fillRect(0, 0, 200, canHeight);
     ctx3.closePath();
 
     var canvas3 = document.getElementById("canvas3"),
@@ -313,8 +336,11 @@ function showScore() {
     ctx3.fillStyle = "white";
     ctx3.font = "50px Arial";
     ctx3.fillText("Score", cWidth / 2 - 3 * 20, 100);
-    //不显示得分0
-    if (dataObj.cont) ctx3.fillText(dataObj.cont * 100, cWidth / 2 - 2 * 20, 180);
+    //显示得分
+    if (dataObj.cont) 
+        ctx3.fillText(dataObj.cont * 100, cWidth / 2 - 2 * 20,100 + cHeight/6 );
+    else
+        ctx3.fillText(dataObj.cont * 100, cWidth / 2 ,100 + cHeight/6 );
     ctx3.fillText("Next", cWidth / 2 - 2 * 20, 300);
     var showBlock = BlockFactory.newInstance(next, 40);
     showBlock.x = cWidth / 2;

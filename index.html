@@ -12,9 +12,9 @@
     
     #wrap {
         position: relative;
-        width: 600px;
+        /* width: 600px;
         height: 600px;
-        margin: 0 auto;
+        margin: 0 auto; */
     }
     
     #canvas1 {
@@ -26,7 +26,7 @@
     #control-panel{
     	position: absolute;
     	top: 0;
-    	right: -200px;
+    	/* right: -200px; */
     }
     #playBtn{
     	position: absolute;
@@ -47,10 +47,10 @@
 
 <body>
     <div id="wrap">
-        <canvas width="600" height="600" id="canvas1"></canvas>
-        <canvas width="600" height="600" id="canvas2"></canvas>
+        <canvas id="canvas1"></canvas>
+        <canvas id="canvas2"></canvas>
         <div id="control-panel">
-        	<canvas width="200" height="600" id="canvas3"></canvas>
+        	<canvas width="200" id="canvas3"></canvas>
         	<div title="暂停/运行" id="playBtn"></div>
         </div>
     </div>
