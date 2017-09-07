@@ -2,6 +2,8 @@
 var screenWidth, screenHeight;
 // 移动设备下，状态栏高度
 var mobileStatusCanvasHeight = 0;
+//方块单元大小
+var defaultSize = 40;
 // 初始化函数
 window.onload = function() {
     var canvas1 = document.getElementById("canvas1"),
@@ -32,8 +34,8 @@ window.onload = function() {
         mobileContrl.style.display = "block";
         // console.log(mobileContrl.style.height);
         var mobileContrlHeight = mobileContrl.offsetHeight;
-        // defaultSize = 80;
-        
+        defaultSize = 80;
+
 
         var mobileStatusCanvas = document.getElementById("mobile-status-canvas"),
             mobileStatus = document.getElementById("mobile-status");
@@ -53,9 +55,6 @@ window.onload = function() {
     canvas1.height = canHeight;
     canvas2.width = canWidth;
     canvas2.height = canHeight;
-
-    /*    canWidth = canvas2.offsetWidth;
-        canHeight = canvas2.offsetHeight;*/
 
     rowNum = canHeight / defaultSize;
     colNum = canWidth / defaultSize;
@@ -77,8 +76,6 @@ window.onload = function() {
 var ctx1, ctx2, ctx3;
 //绘制环境的宽高
 var canWidth, canHeight;
-//方块单元大小
-var defaultSize = 40;
 //行列数
 var rowNum, colNum;
 //绘制方块的样式
@@ -112,12 +109,12 @@ function gameInit() {
     //数据初始化
     dataObj.init();
     //初始化环境状态
-    envirStatus = new Array(rowNum);
+    envirStatus = new Array(colNum);
     var i = 0,
         j = 0;
-    for (i = 0; i < rowNum; i++) {
-        envirStatus[i] = new Array(colNum);
-        for (j = 0; j < colNum; j++) {
+    for (i = 0; i < colNum; i++) {
+        envirStatus[i] = new Array(rowNum);
+        for (j = 0; j < rowNum; j++) {
             envirStatus[i][j] = 0;
         }
     }
@@ -147,52 +144,52 @@ function gameInit() {
         } else if (key === 40) {
             accel = 5;
         }
-        //放开加速键停止加速
-        window.onkeyup = function(event) {
-            var key = event.keyCode;
-            if (key === 40) {
-                accel = 1;
-            }
-        };
+    };
+    //放开加速键停止加速
+    window.onkeyup = function(event) {
+        var key = event.keyCode;
+        if (key === 40) {
+            accel = 1;
+        }
     };
     //设置按钮点击事件
     var downBtn = document.getElementById("down-btn"),
         leftBtn = document.getElementById("left-btn"),
         rightBtn = document.getElementById("right-btn"),
         rotateBtn = document.getElementById("rotate-btn");
-    downBtn.ontouchstart = function(e){
+    downBtn.ontouchstart = function(e) {
         e.preventDefault();
         accel = 5;
     };
-    leftBtn.ontouchstart = function(e){
+    leftBtn.ontouchstart = function(e) {
         e.preventDefault();
         blockMoveLeft();
     };
-    rightBtn.ontouchstart = function(e){
+    rightBtn.ontouchstart = function(e) {
         e.preventDefault();
         blockMoveRight();
     };
-    rotateBtn.ontouchstart = function(e){
+    rotateBtn.ontouchstart = function(e) {
         e.preventDefault();
         blockChange();
     };
-    downBtn.ontouchend = function(e){
+    downBtn.ontouchend = function(e) {
         e.preventDefault();
         accel = 1;
     };
 
     drawBlockEnvir(ctx2);
 
-    //生成一个新方块
+    //最初方块生成
     block = BlockFactory.newInstance(rand(7) + 1, defaultSize);
     next = rand(7) + 1;
 }
-var timeArg;
+var animateFlag; //动画帧查询返回变量
 
 function gameLoop() {
-    cancelAnimationFrame(timeArg);
+    cancelAnimationFrame(animateFlag);
     if (isEnd) return;
-    timeArg = requestAnimationFrame(gameLoop, 15);
+    animateFlag = requestAnimationFrame(gameLoop, 15);
     if (!isPlay) return;
     ctx1.clearRect(0, 0, canWidth, canHeight);
     block.draw(ctx1, defaultSize);
@@ -312,8 +309,8 @@ function eraser() {
     //判断是否可删除,返回可删除行号
     var flag = true;
     var num = -1;
-    for (i = 0, len = envirStatus.length; i < len; i++) {
-        for (j = 0, len2 = envirStatus[i].length; j < len2; j++) {
+    for (i = 0, len = rowNum; i < len; i++) {
+        for (j = 0, len2 = colNum; j < len2; j++) {
             if (!envirStatus[j][i]) {
                 flag = false;
                 break;
@@ -382,14 +379,14 @@ var dataObj = {
 
 //显示分数
 function showScore() {
-    if(screenWidth > screenHeight){
+    if (screenWidth > screenHeight) {
         pcShowScore();
-    }else{
+    } else {
         mobileShowScore();
     }
 }
 // 移动端显示分数
-function mobileShowScore(){
+function mobileShowScore() {
     ctx3.clearRect(0, 0, canWidth, canHeight);
     ctx3.beginPath();
     ctx3.fillStyle = "rgb(13,30,64)";
@@ -402,15 +399,15 @@ function mobileShowScore(){
     ctx3.fillStyle = "white";
     ctx3.font = "50px Arial";
     ctx3.fillText("Score: ", cWidth / 20, 100);
-    ctx3.fillText(dataObj.cont * 100, cWidth / 2 + 150, 100 );
+    ctx3.fillText(dataObj.cont * 100, cWidth / 2 + 150, 100);
     ctx3.fillText("Next", cWidth / 2 + 500, 100);
     var showBlock = BlockFactory.newInstance(next, 40);
     showBlock.x = cWidth / 2 + 700;
-    showBlock.y = cHeight / 2 + 2 * defaultSize;
+    showBlock.y = cHeight / 2 + defaultSize;
     showBlock.draw(ctx3, 40);
 }
 //PC端显示分数
-function pcShowScore(){
+function pcShowScore() {
     ctx3.clearRect(0, 0, 200, canHeight);
     ctx3.beginPath();
     ctx3.fillStyle = "rgb(13,30,64)";

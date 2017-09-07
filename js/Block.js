@@ -43,6 +43,7 @@ function Square(blockSize) {
     this.xIndex;
     this.yIndex;
     this.matrix;
+    this.blockSize = blockSize;
     if (typeof Square.prototype.draw !== "function") {
         Square.prototype.draw = function(ctx,blockSize) {
             ctx.beginPath();
@@ -67,8 +68,8 @@ function Square(blockSize) {
         };
         Square.prototype.calMatrix = function() {
             //使用点阵系统便于计算
-            this.xIndex = this.x / blockSize;
-            this.yIndex = this.y / blockSize;
+            this.xIndex = this.x / this.blockSize;
+            this.yIndex = this.y / this.blockSize;
             this.matrix = [
                 { x: this.xIndex, y: this.yIndex },
                 { x: this.xIndex-1, y: this.yIndex  },
@@ -87,8 +88,9 @@ function Strip(blockSize) {
     this.xIndex;
     this.yIndex;
     this.matrix;
+    this.blockSize = blockSize;
     if (typeof Strip.prototype.draw !== "function") {
-        Strip.prototype.draw = function(ctx,blockSize) {
+        Strip.prototype.draw = function(ctx) {
             ctx.save();
             ctx.translate(this.x, this.y);
             this.status %= 2;
@@ -102,17 +104,17 @@ function Strip(blockSize) {
             var i = 0;
 
             for (i = 0, len = 4; i <= len; i++) {
-                ctx.moveTo(-2 * blockSize + i * blockSize, 0);
-                ctx.lineTo(-2 * blockSize + i * blockSize, 0 + blockSize);
+                ctx.moveTo(-2 * this.blockSize + i * this.blockSize, 0);
+                ctx.lineTo(-2 * this.blockSize + i * this.blockSize, 0 + this.blockSize);
             }
             //绘制两条横向的线
-            ctx.moveTo(-2 * blockSize, 0);
-            ctx.lineTo(-2 * blockSize + 4 * blockSize, 0);
-            ctx.moveTo(-2 * blockSize, 0 + blockSize);
-            ctx.lineTo(-2 * blockSize + 4 * blockSize, 0 + blockSize);
+            ctx.moveTo(-2 * this.blockSize, 0);
+            ctx.lineTo(-2 * this.blockSize + 4 * this.blockSize, 0);
+            ctx.moveTo(-2 * this.blockSize, 0 + this.blockSize);
+            ctx.lineTo(-2 * this.blockSize + 4 * this.blockSize, 0 + this.blockSize);
             ctx.closePath();
 
-            ctx.fillRect(-2 * blockSize, 0, 4 * blockSize, blockSize);
+            ctx.fillRect(-2 * this.blockSize, 0, 4 * this.blockSize, this.blockSize);
             ctx.stroke();
 
             ctx.restore();
@@ -121,8 +123,8 @@ function Strip(blockSize) {
         };
         Strip.prototype.calMatrix = function() {
             //更新点阵位置
-            this.xIndex = this.x / blockSize;
-            this.yIndex = this.y / blockSize;
+            this.xIndex = this.x / this.blockSize;
+            this.yIndex = this.y / this.blockSize;
 
             this.status %=2;
             if (!this.status) {
@@ -152,8 +154,9 @@ function Triangle(blockSize) {
     this.xIndex;
     this.yIndex;
     this.matrix;
+    this.blockSize = blockSize;
     if (typeof Triangle.prototype.draw !== "function") {
-        Triangle.prototype.draw = function(ctx,blockSize) {
+        Triangle.prototype.draw = function(ctx) {
             ctx.save();
             ctx.translate(this.x, this.y);
             ctx.rotate(this.status * 90 * Math.PI / 180);
@@ -165,30 +168,30 @@ function Triangle(blockSize) {
 
             //绘制描边
             ctx.strokeStyle = blockStrokeStyle;
-            ctx.moveTo(-blockSize, 0);
-            ctx.lineTo(2 * blockSize, 0);
+            ctx.moveTo(-this.blockSize, 0);
+            ctx.lineTo(2 * this.blockSize, 0);
 
-            ctx.moveTo(-blockSize, blockSize);
-            ctx.lineTo(2 * blockSize, blockSize);
+            ctx.moveTo(-this.blockSize, this.blockSize);
+            ctx.lineTo(2 * this.blockSize, this.blockSize);
 
-            ctx.moveTo(0, -blockSize);
-            ctx.lineTo(blockSize, -blockSize);
+            ctx.moveTo(0, -this.blockSize);
+            ctx.lineTo(this.blockSize, -this.blockSize);
 
-            ctx.moveTo(0, -blockSize);
-            ctx.lineTo(0, blockSize);
+            ctx.moveTo(0, -this.blockSize);
+            ctx.lineTo(0, this.blockSize);
 
-            ctx.moveTo(blockSize, -blockSize);
-            ctx.lineTo(blockSize, blockSize);
+            ctx.moveTo(this.blockSize, -this.blockSize);
+            ctx.lineTo(this.blockSize, this.blockSize);
 
-            ctx.moveTo(-blockSize, 0);
-            ctx.lineTo(-blockSize, blockSize);
+            ctx.moveTo(-this.blockSize, 0);
+            ctx.lineTo(-this.blockSize, this.blockSize);
 
-            ctx.moveTo(2 * blockSize, 0);
-            ctx.lineTo(2 * blockSize, blockSize);
+            ctx.moveTo(2 * this.blockSize, 0);
+            ctx.lineTo(2 * this.blockSize, this.blockSize);
 
             ctx.closePath();
-            ctx.fillRect(0, 0 - blockSize, blockSize, blockSize);
-            ctx.fillRect(0 - blockSize, 0, blockSize * 3, blockSize);
+            ctx.fillRect(0, 0 - this.blockSize, this.blockSize, this.blockSize);
+            ctx.fillRect(0 - this.blockSize, 0, this.blockSize * 3, this.blockSize);
             ctx.stroke();
             ctx.restore();
 
@@ -196,8 +199,8 @@ function Triangle(blockSize) {
         };
         Triangle.prototype.calMatrix = function() {
             //更新点阵位置
-            this.xIndex = this.x / blockSize;
-            this.yIndex = this.y / blockSize;
+            this.xIndex = this.x / this.blockSize;
+            this.yIndex = this.y / this.blockSize;
 
             this.status %= 4;
             switch (this.status) {
@@ -246,8 +249,9 @@ function SideThree(typeInt,blockSize) {
     this.xIndex;
     this.yIndex;
     this.matrix;
+    this.blockSize = blockSize;
     if (typeof SideThree.prototype.draw !== "function") {
-        SideThree.prototype.draw = function(ctx,blockSize) {
+        SideThree.prototype.draw = function(ctx) {
             ctx.save();
             ctx.translate(this.x, this.y);
             if (this.type === 5) ctx.scale(-1, 1);
@@ -258,31 +262,31 @@ function SideThree(typeInt,blockSize) {
             ctx.fillStyle = blockFillStyle;
             //绘制描边
             ctx.strokeStyle = blockStrokeStyle;
-            ctx.moveTo(-2 * blockSize, 0);
-            ctx.lineTo( blockSize, 0);
+            ctx.moveTo(-2 * this.blockSize, 0);
+            ctx.lineTo( this.blockSize, 0);
 
-            ctx.moveTo(-2 * blockSize, blockSize);
-            ctx.lineTo(blockSize, blockSize);
+            ctx.moveTo(-2 * this.blockSize, this.blockSize);
+            ctx.lineTo(this.blockSize, this.blockSize);
 
-            ctx.moveTo(0, -blockSize);
-            ctx.lineTo(blockSize, -blockSize);
+            ctx.moveTo(0, -this.blockSize);
+            ctx.lineTo(this.blockSize, -this.blockSize);
 
-            ctx.moveTo(-2 * blockSize, 0);
-            ctx.lineTo(-2 * blockSize, blockSize);
+            ctx.moveTo(-2 * this.blockSize, 0);
+            ctx.lineTo(-2 * this.blockSize, this.blockSize);
 
-            ctx.moveTo(-blockSize, 0);
-            ctx.lineTo(-blockSize, blockSize);
+            ctx.moveTo(-this.blockSize, 0);
+            ctx.lineTo(-this.blockSize, this.blockSize);
 
-            ctx.moveTo(0, -blockSize);
-            ctx.lineTo(0, blockSize);
+            ctx.moveTo(0, -this.blockSize);
+            ctx.lineTo(0, this.blockSize);
 
-            ctx.moveTo(blockSize, -blockSize);
-            ctx.lineTo(blockSize, blockSize);
+            ctx.moveTo(this.blockSize, -this.blockSize);
+            ctx.lineTo(this.blockSize, this.blockSize);
 
 
             ctx.closePath();
-            ctx.fillRect(-2 * blockSize, 0, 2 * blockSize, blockSize);
-            ctx.fillRect(0, -blockSize, blockSize, 2 * blockSize);
+            ctx.fillRect(-2 * this.blockSize, 0, 2 * this.blockSize, this.blockSize);
+            ctx.fillRect(0, -this.blockSize, this.blockSize, 2 * this.blockSize);
             ctx.stroke();
             ctx.restore();
 
@@ -291,8 +295,8 @@ function SideThree(typeInt,blockSize) {
 
         SideThree.prototype.calMatrix = function() {
             //更新点阵位置
-            this.xIndex = this.x / blockSize;
-            this.yIndex = this.y / blockSize;
+            this.xIndex = this.x / this.blockSize;
+            this.yIndex = this.y / this.blockSize;
 
             this.status %= 4;
             var typeArg = this.type - 4;
@@ -342,8 +346,9 @@ function SideTwo(typeInt,blockSize) {
     this.xIndex;
     this.yIndex;
     this.matrix;
+    this.blockSize = blockSize;
     if (typeof SideTwo.prototype.draw !== "function") {
-        SideTwo.prototype.draw = function(ctx,blockSize) {
+        SideTwo.prototype.draw = function(ctx) {
             ctx.save();
             ctx.translate(this.x, this.y);
             if (this.type === 7) ctx.scale(-1, 1);
@@ -355,30 +360,30 @@ function SideTwo(typeInt,blockSize) {
             ctx.fillStyle = blockFillStyle;
             //绘制描边
             ctx.strokeStyle = blockStrokeStyle;
-            ctx.moveTo(-blockSize, 0);
-            ctx.lineTo(2 * blockSize, 0);
+            ctx.moveTo(-this.blockSize, 0);
+            ctx.lineTo(2 * this.blockSize, 0);
 
-            ctx.moveTo(-blockSize, blockSize);
-            ctx.lineTo(blockSize, blockSize);
+            ctx.moveTo(-this.blockSize, this.blockSize);
+            ctx.lineTo(this.blockSize, this.blockSize);
 
-            ctx.moveTo(0, -blockSize);
-            ctx.lineTo(2 * blockSize, -blockSize);
+            ctx.moveTo(0, -this.blockSize);
+            ctx.lineTo(2 * this.blockSize, -this.blockSize);
 
-            ctx.moveTo(-blockSize, 0);
-            ctx.lineTo(-blockSize, blockSize);
+            ctx.moveTo(-this.blockSize, 0);
+            ctx.lineTo(-this.blockSize, this.blockSize);
 
-            ctx.moveTo(0, -blockSize);
-            ctx.lineTo(0, blockSize);
+            ctx.moveTo(0, -this.blockSize);
+            ctx.lineTo(0, this.blockSize);
 
-            ctx.moveTo(blockSize, -blockSize);
-            ctx.lineTo(blockSize, blockSize);
+            ctx.moveTo(this.blockSize, -this.blockSize);
+            ctx.lineTo(this.blockSize, this.blockSize);
 
-            ctx.moveTo(2 * blockSize, -blockSize);
-            ctx.lineTo(2 * blockSize, 0);
+            ctx.moveTo(2 * this.blockSize, -this.blockSize);
+            ctx.lineTo(2 * this.blockSize, 0);
 
             ctx.closePath();
-            ctx.fillRect(-blockSize, 0, 2 * blockSize, blockSize);
-            ctx.fillRect(0, -blockSize, 2 * blockSize, blockSize);
+            ctx.fillRect(-this.blockSize, 0, 2 * this.blockSize, this.blockSize);
+            ctx.fillRect(0, -this.blockSize, 2 * this.blockSize, this.blockSize);
             ctx.stroke();
             ctx.restore();
 
@@ -387,8 +392,8 @@ function SideTwo(typeInt,blockSize) {
         SideTwo.prototype.calMatrix = function() {
             var typeArg = this.type - 6;
             //更新点阵位置
-            this.xIndex = this.x / blockSize;
-            this.yIndex = this.y / blockSize;
+            this.xIndex = this.x / this.blockSize;
+            this.yIndex = this.y / this.blockSize;
             //格式化状态
             this.status %= 2;
             if (!this.status) {
