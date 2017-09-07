@@ -84,7 +84,7 @@ var block, next;
 //环境状态数组,0:代表不存在,1:代表存在
 var envirStatus;
 //用于计数下落的速度
-var initFallCount = 20,
+var initFallCount = 30,
     fallCount = initFallCount,
     accel = 1;
 //用于判断游戏是否结束
@@ -162,14 +162,26 @@ function gameInit() {
     leftBtn.ontouchstart = function(e) {
         e.preventDefault();
         blockMoveLeft();
+        var flag = setInterval(blockMoveLeft,100);
+        leftBtn.ontouchend = function(){
+            clearInterval(flag);
+        }
     };
     rightBtn.ontouchstart = function(e) {
         e.preventDefault();
         blockMoveRight();
+        var flag = setInterval(blockMoveRight,100);
+        rightBtn.ontouchend = function(){
+            clearInterval(flag);
+        }
     };
     rotateBtn.ontouchstart = function(e) {
         e.preventDefault();
         blockChange();
+        var flag = setInterval(blockChange,100);
+        rotateBtn.ontouchend = function(){
+            clearInterval(flag);
+        }
     };
     downBtn.ontouchend = function(e) {
         e.preventDefault();
