@@ -4,6 +4,8 @@ var screenWidth, screenHeight;
 var mobileStatusCanvasHeight = 0;
 //方块单元大小
 var defaultSize = 40;
+//行列数
+var rowNum, colNum=12;
 // 初始化函数
 window.onload = function() {
     var canvas1 = document.getElementById("canvas1"),
@@ -25,17 +27,15 @@ window.onload = function() {
         var controlPanel = document.getElementById("control-panel");
         controlPanel.style.left = canWidth + "px";
         canvas3.height = canHeight;
+
+        defaultSize = Number.parseInt(canWidth / colNum);
+        rowNum = Number.parseInt(canHeight / defaultSize);
     } else {
-        /*var canWrap = document.getElementById("wrap");
-        canWrap.style.display = (screenWidth - canWidth) / 2 + "px";*/
         var controlPanel = document.getElementById("control-panel");
         controlPanel.style.display = "none"
         var mobileContrl = document.getElementById("mobile-control");
         mobileContrl.style.display = "block";
-        // console.log(mobileContrl.style.height);
         var mobileContrlHeight = mobileContrl.offsetHeight;
-        defaultSize = 80;
-
 
         var mobileStatusCanvas = document.getElementById("mobile-status-canvas"),
             mobileStatus = document.getElementById("mobile-status");
@@ -44,9 +44,12 @@ window.onload = function() {
         mobileStatusCanvas.height = mobileStatusCanvasHeight;
         mobileStatusCanvas.width = screenWidth;
         ctx3 = mobileStatusCanvas.getContext("2d");
-
+        
+        //根据列数来计算大小
+        defaultSize = Number.parseInt(screenWidth / colNum);
         canHeight = Number.parseInt((screenHeight - mobileContrlHeight - mobileStatusCanvasHeight) / defaultSize) * defaultSize;
         canWidth = Number.parseInt(screenWidth / defaultSize) * defaultSize;
+        rowNum = Number.parseInt(canHeight / defaultSize);
 
         canvas1.style.top = mobileStatusCanvasHeight + "px";
     }
@@ -55,9 +58,6 @@ window.onload = function() {
     canvas1.height = canHeight;
     canvas2.width = canWidth;
     canvas2.height = canHeight;
-
-    rowNum = canHeight / defaultSize;
-    colNum = canWidth / defaultSize;
 
     var playBtn = document.getElementById("playBtn");
     playBtn.style.cursor = "pointer";
@@ -76,8 +76,6 @@ window.onload = function() {
 var ctx1, ctx2, ctx3;
 //绘制环境的宽高
 var canWidth, canHeight;
-//行列数
-var rowNum, colNum;
 //绘制方块的样式
 var blockStrokeStyle = "white",
     blockFillStyle = "red";
@@ -192,7 +190,7 @@ function gameLoop() {
     animateFlag = requestAnimationFrame(gameLoop, 15);
     if (!isPlay) return;
     ctx1.clearRect(0, 0, canWidth, canHeight);
-    block.draw(ctx1, defaultSize);
+    block.draw(ctx1);
     //判断是否可以下落
     if (fallCount <= accel && !canFall()) {
         ctx1.clearRect(0, 0, canWidth, canHeight);

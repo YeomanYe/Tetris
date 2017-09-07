@@ -45,7 +45,7 @@ function Square(blockSize) {
     this.matrix;
     this.blockSize = blockSize;
     if (typeof Square.prototype.draw !== "function") {
-        Square.prototype.draw = function(ctx,blockSize) {
+        Square.prototype.draw = function(ctx) {
             ctx.beginPath();
             ctx.fillStyle = blockFillStyle;
 
@@ -54,13 +54,13 @@ function Square(blockSize) {
             var i = 0;
             for (i = 0, len = 2; i <= len; i++) {
                 //绘制纵向的线
-                ctx.moveTo(this.x-blockSize + i * blockSize, this.y-blockSize);
-                ctx.lineTo(this.x- blockSize + i * blockSize, this.y +  blockSize);
+                ctx.moveTo(this.x-this.blockSize + i * this.blockSize, this.y-this.blockSize);
+                ctx.lineTo(this.x- this.blockSize + i * this.blockSize, this.y +  this.blockSize);
                 //绘制横向的线
-                ctx.moveTo(this.x -blockSize, this.y + i * blockSize-blockSize);
-                ctx.lineTo(this.x +  blockSize, this.y + i * blockSize-blockSize);
+                ctx.moveTo(this.x -this.blockSize, this.y + i * this.blockSize-this.blockSize);
+                ctx.lineTo(this.x +  this.blockSize, this.y + i * this.blockSize-this.blockSize);
             }
-            ctx.fillRect(this.x-blockSize, this.y-blockSize, 2 * blockSize, 2 * blockSize);
+            ctx.fillRect(this.x-this.blockSize, this.y-this.blockSize, 2 * this.blockSize, 2 * this.blockSize);
             ctx.stroke();
             ctx.closePath();
 
