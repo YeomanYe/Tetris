@@ -96,7 +96,7 @@ function game() {
     gameInit();
     gameLoop();
 }
-
+// 游戏初始化
 function gameInit() {
     //暂停位清除
     isPlay = true;
@@ -195,7 +195,7 @@ function gameInit() {
     next = rand(7) + 1;
 }
 var animateFlag; //动画帧查询返回变量
-
+// 游戏循环
 function gameLoop() {
     cancelAnimationFrame(animateFlag);
     if (isEnd) return;
